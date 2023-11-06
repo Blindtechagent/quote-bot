@@ -6,7 +6,7 @@ const MODEL = "gpt-3.5-turbo";
 
 
 /*  -----------------------------------------------------------------------------------------------
-  VARIABLES WEB APP
+  WEB APP VARIABLES
 --------------------------------------------------------------------------------------------------- */
 const character = document.querySelectorAll('.character'); // array
 const loader = document.querySelector(".loading");
@@ -24,16 +24,16 @@ const shareBtn = document.querySelector('#share');
 // GENERATE RANDOM ACTIONS 
 function getRandomAction() {
     const actions = [
-        'saluta nel tuo modo più iconico',
-        'dai un consiglio di stile in base ai tuoi gusti',
-        'racconta la tua ultima avventura',
-        'svelami i tuoi sogni',
-        'dimmi chi è il tuo migliore amico',
-        'scrivi la tua bio di linkedin'
+        'greet in your most iconic way',
+        'give style advice based on your preferences',
+        'tell about your latest adventure',
+        'reveal your dreams',
+        'tell me who your best friend is',
+        'write your LinkedIn bio'
     ];
 
 
-    // da zero a 5 
+    // from zero to 5 
     const indexRandom = Math.floor(Math.random() * actions.length);
     return actions[indexRandom];
 }
@@ -48,24 +48,24 @@ async function playCharacter(nameCharacter) {
     loader.classList.remove("loading-hidden");
 
 
-    // genera azione random x prompt GPT
+    // generate a random action for GPT prompt
     const action = getRandomAction();
 
-    // crea promptGPT con personaggio e azione
-    const completeChat = []; // array contiene prompt x GPT
+    // create GPT prompt with the character and action
+    const completeChat = []; // array contains prompts for GPT
 
     completeChat.push({
         role: "user",
-        content: `Sei ${nameCharacter} e ${action} con un massimo di 100 caratteri senza mai uscire dal tuo personaggio `
+        content: `You are ${nameCharacter} and ${action} with a maximum of 100 characters without breaking character `
     });
 
     console.log(completeChat);
 
-    // setta livello di creativita di GPT
+    // set GPT's creativity level
     const temperature = 0.7;
 
 
-    // passa tutti i parametri a Open AI API x interrogare chatGPT
+    // pass all parameters to the OpenAI API to query chatGPT
     const response = await fetch(API_URL, {
 
         method: "POST",
@@ -81,20 +81,20 @@ async function playCharacter(nameCharacter) {
 
     })
 
-    // ritorna da chatGPT la risposta e la converte in json nella variabile data
+    // get the response from chatGPT and convert it to JSON in the variable data
     const data = await response.json();
 
-    // convertito in json, legge il msg creato da chatGPT
+    // after converting to JSON, read the message created by chatGPT
     const message = data.choices[0].message.content;
 
     // hide loader
     loader.classList.add("loading-hidden");
 
 
-    // delete blank to convert nameCharacter to nameImage connected to Charater
+    // remove spaces from the character's name to find the corresponding character image
     const nameImage = nameCharacter.replace(/\s+/g, '-');
 
-    // mostra modal con valori da chatGPT
+    // display the modal with values from chatGPT
     modalContent.innerHTML = `
     <div class="character"><img src="./images/${nameImage}.png"></div>
     <h2>${nameCharacter}</h2>
@@ -122,26 +122,26 @@ function saveQuote() {
 //  SHARE THE QUOTE
 function shareQuote() {
 
-    // 1. collect msg to share - prelevato dirett da modal content
+    // 1. collect the message to share - retrieved directly from modal content
     const modalNameCharacter = modal.querySelector('h2').innerText;
     const modalQuote = modal.querySelector('p').innerText;
 
-    const text = `Senti cosa ha da dire ${modalNameCharacter} : "${modalQuote}" #quoteBOT #BooleanCodingWeek2023 `
+    const text = `Listen to what ${modalNameCharacter} has to say: "${modalQuote}" #quoteBOT #BooleanCodingWeek2023 `
 
 
-    // 2. share API
+    // 2. share using the Share API
     if (navigator.canShare) {
         navigator.share({ text: text });
 
     } else {
 
-        console.error('share API not supported');
+        console.error('Share API not supported');
         fallbackShare();
     }
 }
 
 
-// FALLBACKSHARE
+// FALLBACK SHARE
 function fallbackShare() {
     const href = 'https://wa.me/?text=${ encodeURIComponent(text) }';
     window.location.href = href;
@@ -169,7 +169,7 @@ character.forEach(function (element) {
 modalClose.addEventListener('click', function () {
     modal.classList.add("modal-hidden");
     loader.classList.add("loading-hidden");
-    // reset console to start new game
+    // reset console to start a new game
     console.clear();
 })
 
@@ -180,11 +180,3 @@ saveBtn.addEventListener('click', saveQuote);
 
 // SHARE BUTTON
 shareBtn.addEventListener('click', shareQuote);
-
-
-
-
-
-
-
-
